@@ -11,7 +11,7 @@ pub fn read_n_bytes(
     let mut bytes = Vec::new();
     while addr != start_addr + n_bytes {
         assert!(
-            addr >= buffer_len,
+            addr < buffer_len,
             "Couldn't read from Address {addr} exceeds buffer length {buffer_len}"
         );
         bytes.push(buffer[addr]);
