@@ -20,7 +20,7 @@ pub fn render(state: &Chip8State, rl_handle: &mut RaylibHandle, rl_thread: &Rayl
             if state.display[y as usize][x as usize] {
                 color = Color::WHITE;
             } else {
-                color = Color::GREEN;
+                color = Color::BLACK;
             }
             d.draw_rectangle(x * scale_x, y * scale_y, scale_x, scale_y, color);
         }
