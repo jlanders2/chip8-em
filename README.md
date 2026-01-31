@@ -49,6 +49,7 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#running">Running</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -112,21 +113,28 @@ This is an example of how to list things you need to use the software and how to
 
 Choose the method that best fits your needs. If you just want to use the emulator, I recommend using the **Pre-built Binaries**.
 
+#### Prerequisity - Obtaining a Chip8 Rom
+*Note - as of now the project only supports chip8 programs. Chip8 extensions such as SUPER-Chip or XO-Chip will not work with v1*
+This emulator requires you either:
+A) Create your own ROM using a tool like [Octo](https://johnearnest.github.io/Octo/) 
+B) Download a ROM made by the community [here](https://johnearnest.github.io/chip8Archive/?sort=platform)
+    * Navigate to link provided above
+    * Click on a chip8 platform game that seems interesting
+    * Click "Download Rom"
+
 #### 🚀 Option 1: Pre-built Binaries (Fastest)
 **WIP**
 
 #### 🛠️ Option 2: Build Locally (From Source)
 **WIP**
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
 **WIP**
+
 <!-- Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources. -->
 
 <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
