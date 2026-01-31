@@ -11,7 +11,7 @@ static MEMORY_LIMIT: i32 = 4096;
 static STACK_LIMIT: i32 = 16;
 static VARIABLE_REGISTER_COUNT: i32 = 16;
 static TIMER_TICK_RATE: u32 = 60;
-static DESIRED_FPS: u32 = 165;
+static DESIRED_FPS: u32 = 60;
 static CYCLES_PER_FRAME: u32 = 10;
 
 #[derive(Clone)]

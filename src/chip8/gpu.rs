@@ -13,10 +13,12 @@ pub fn draw(state: &mut Chip8State, vx: u8, vy: u8, bytes_to_draw: &[u8], bytes_
     let start_x = state.r_v[vx as usize];
     let start_y = state.r_v[vy as usize];
     for y in start_y..start_y + bytes_to_draw_len {
+        println!("{}", bytes_idx);
         if (y as i32) < CHIP8_DISPLAY_HEIGHT {
             // 8 is the hardcoded sprite width, has to atleast have 1 8 bit value to display
             let mut bit_idx = 0;
             for x in start_x..start_x + SPRITE_WIDTH {
+                println!("(X,Y): ({},{})", x, y);
                 if (x as i32) < CHIP8_DISPLAY_WIDTH {
                     let sprite_pixel = ((bytes_to_draw[bytes_idx] >> (7 - bit_idx)) & 1) == 1;
                     let current_pixel = state.display[y as usize][x as usize];
@@ -32,6 +34,48 @@ pub fn draw(state: &mut Chip8State, vx: u8, vy: u8, bytes_to_draw: &[u8], bytes_
                 }
             }
         }
+        bytes_idx += 1;
+    }
+}
+
+pub fn wrapping_draw(
+    state: &mut Chip8State,
+    vx: u8,
+    vy: u8,
+    bytes_to_draw: &[u8],
+    bytes_to_draw_len: u8,
+) {
+    let mut bytes_idx = 0;
+    let start_x = state.r_v[vx as usize];
+    let start_y = state.r_v[vy as usize];
+
+    while bytes_idx < bytes_to_draw_len {
+        let mut y = start_y.wrapping_add(bytes_idx);
+        if y as i32 >= CHIP8_DISPLAY_HEIGHT {
+            y = (y - CHIP8_DISPLAY_HEIGHT as u8) % CHIP8_DISPLAY_HEIGHT as u8;
+        }
+
+        let mut bit_idx = 0;
+
+        while bit_idx < SPRITE_WIDTH {
+            let mut x = start_x.wrapping_add(bit_idx);
+            if x as i32 >= CHIP8_DISPLAY_WIDTH {
+                x = (x - CHIP8_DISPLAY_WIDTH as u8) % CHIP8_DISPLAY_WIDTH as u8;
+            }
+
+            let sprite_pixel = ((bytes_to_draw[bytes_idx as usize] >> (7 - bit_idx)) & 1) == 1;
+            let current_pixel = state.display[y as usize][x as usize];
+            let new_pixel = current_pixel ^ sprite_pixel;
+
+            state.display[y as usize][x as usize] = new_pixel;
+
+            if new_pixel != current_pixel {
+                state.r_v[0xF] = 1;
+            }
+
+            bit_idx += 1;
+        }
+
         bytes_idx += 1;
     }
 }

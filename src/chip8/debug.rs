@@ -22,6 +22,6 @@ pub fn print_debug(state: &Chip8State, current_instruction: u16) {
     }
     println!("Current Instruction: {:04X}", current_instruction);
     println!("----------------");
-    println!("Press Enter to continue...");
-    let _ = io::stdin().read(&mut [0u8]).unwrap();
+    // println!("Press Enter to continue...");
+    // let _ = io::stdin().read(&mut [0u8]).unwrap();
 }

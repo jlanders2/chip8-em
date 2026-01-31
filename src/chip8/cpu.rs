@@ -63,24 +63,24 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
             }
         }
         (0x8, _, _, 0x5) => {
-            let flag = state.r_v[x as usize] > state.r_v[y as usize];
+            let flag = state.r_v[x as usize] >= state.r_v[y as usize];
             state.r_v[x as usize] = state.r_v[x as usize].wrapping_sub(state.r_v[y as usize]);
             state.r_v[0xF] = if flag { 1 } else { 0 };
         }
         (0x8, _, _, 0x6) => {
             let flag = (state.r_v[x as usize] & 0b00000001) == 1;
-            state.r_v[0xF] = if flag { 1 } else { 0 };
             state.r_v[x as usize] = state.r_v[x as usize] / 2;
+            state.r_v[0xF] = if flag { 1 } else { 0 };
         }
         (0x8, _, _, 0x7) => {
-            let flag = state.r_v[x as usize] < state.r_v[y as usize];
+            let flag = state.r_v[x as usize] <= state.r_v[y as usize];
             state.r_v[x as usize] = state.r_v[y as usize].wrapping_sub(state.r_v[x as usize]);
             state.r_v[0xF] = if flag { 1 } else { 0 };
         }
         (0x8, _, _, 0xE) => {
             let flag = ((state.r_v[x as usize] & 0b10000000) >> 7) == 1;
-            state.r_v[0xF] = if flag { 1 } else { 0 };
             state.r_v[x as usize] = state.r_v[x as usize].wrapping_mul(2);
+            state.r_v[0xF] = if flag { 1 } else { 0 };
         }
         (0x9, _, _, _) => {
             if state.r_v[x as usize] != state.r_v[y as usize] {
@@ -97,7 +97,7 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
         (0xD, _, _, _) => {
             state.r_v[0xF] = 0;
             let bytes = read_n_bytes(&state.mem, state.mem.len(), state.r_i as usize, n as usize);
-            gpu::draw(state, x, y, &bytes, n);
+            gpu::wrapping_draw(state, x, y, &bytes, n);
         }
         (0xE, _, _, 0xE) => {
             let key_index = state.r_v[x as usize];
