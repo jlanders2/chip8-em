@@ -1,12 +1,4 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
 
 
@@ -24,7 +16,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="https://git.colelanders.dev/jlanders/chip8-em">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -33,14 +25,10 @@
   <p align="center">
     Chip8 Emulator built in Rust.
     <br />
-    <a href="https://git.colelanders.dev/jlanders/chip8-em"><strong>Explore the docs »</strong></a>
+    <!-- <a href="https://git.colelanders.dev/jlanders/chip8-em"><strong>Explore the docs »</strong></a>
+    <br /> -->
     <br />
-    <br />
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
-    &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot;
-    <a href="https://github.com/github_username/repo_name/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://git.colelanders.dev/jlanders/chip8-em">View Demo</a>
   </p>
 </div>
 
@@ -53,7 +41,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Built With Rust</a></li>
+        <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
     <li>
@@ -87,14 +75,10 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* [![Rust][Rust]][Rust-url]
+* [![Raylib][Raylib]][Raylib-url]
+* [![Clap][Clap]][Clap-url]
+* [![Rodio][Rodio]][Rodio-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -119,7 +103,7 @@ This is an example of how to list things you need to use the software and how to
 1. Get a free API Key at [https://example.com](https://example.com)
 2. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://git.colelanders.dev/jlanders/chip8-em.git
    ```
 3. Install NPM packages
    ```sh
@@ -144,7 +128,7 @@ This is an example of how to list things you need to use the software and how to
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+<!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -153,40 +137,19 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
-
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+- [ ] Super-Chip8 extension
+- [ ] XO-CHIP extension
+- [ ] More Configuration
+    - [ ] Window Resizing
+    - [ ] Allow rebinding keys via GUI
+    - [ ] Replacing default sound via GUI
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Top contributors:
-
-<a href="https://github.com/github_username/repo_name/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
-</a>
-
-
+Since this is a personal project, this specific repo is not open for contributions. However, please feel free to clone the project and use it as you wish!
 
 <!-- LICENSE -->
 ## License
@@ -202,7 +165,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Cole Landers - jclanders@pm.me
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://git.colelanders.dev/jlanders/chip8-em](https://git.colelanders.dev/jlanders/chip8-em)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -222,11 +185,19 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 <!-- [license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
+[license-url]: https://git.colelanders.dev/jlanders/chip8-em/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png -->
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
-<!-- [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white -->
-<!-- [Next-url]: https://nextjs.org/ -->
+[Rust]: https://img.shields.io/badge/rust-%23E32F26.svg?style=for-the-badge&logo=rust&logoColor=white
+[Rust-url]: https://www.rust-lang.org/
 
+[Raylib]: https://img.shields.io/badge/raylib-white?style=for-the-badge&logo=target&logoColor=black
+[Raylib-url]: https://www.raylib.com/
+
+[Clap]: https://img.shields.io/badge/clap-blue?style=for-the-badge&logo=command-line&logoColor=white
+[Clap-url]: https://clap.rs/
+
+[Rodio]: https://img.shields.io/badge/rodio-orange?style=for-the-badge&logo=audio-bus&logoColor=white
+[Rodio-url]: https://github.com/RustAudio/rodio
