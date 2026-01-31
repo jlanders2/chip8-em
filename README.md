@@ -188,7 +188,7 @@ Project Link: [https://git.colelanders.dev/jlanders/chip8-em](https://git.colela
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username-->
 [license-shield]: https://img.shields.io/badge/license-MIT-blue
-[license-url]: https://git.colelanders.dev/jlanders/chip8-em/LICENSE
+[license-url]: https://git.colelanders.dev/jlanders/chip8-em/src/branch/main/LICENSE
 [product-screenshot]: images/screenshot.png 
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
 [Rust]: https://img.shields.io/badge/rust-%23E32F26.svg?style=for-the-badge&logo=rust&logoColor=white
