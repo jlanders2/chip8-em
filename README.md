@@ -10,15 +10,15 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![project_license][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![MIT][license-shield]][license-url]
+<!-- [![LinkedIn][linkedin-shield]][linkedin-url] -->
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://git.colelanders.dev/jlanders/chip8-em">
+  <!-- <a href="https://git.colelanders.dev/jlanders/chip8-em">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+  </a> -->
 
 <h3 align="center">Chip8 Emulator</h3>
 
@@ -187,6 +187,8 @@ Project Link: [https://git.colelanders.dev/jlanders/chip8-em](https://git.colela
 [license-url]: https://git.colelanders.dev/jlanders/chip8-em/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username-->
+[license-shield]: https://img.shields.io/badge/license-MIT-blue
+[license-url]: https://git.colelanders.dev/jlanders/chip8-em/LICENSE
 [product-screenshot]: images/screenshot.png 
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
 [Rust]: https://img.shields.io/badge/rust-%23E32F26.svg?style=for-the-badge&logo=rust&logoColor=white
