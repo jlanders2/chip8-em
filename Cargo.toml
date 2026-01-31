@@ -1,5 +1,5 @@
 [package]
-name = "chip-8-em"
+name = "chip8-em"
 version = "0.1.0"
 edition = "2024"
 
