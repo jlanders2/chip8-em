@@ -22,7 +22,8 @@ fn main() {
             || args.quirks.contains(&String::from("chip8")),
         memory: args.quirks.contains(&String::from("memory"))
             || args.quirks.contains(&String::from("chip8")),
-        display_wait: args.quirks.contains(&String::from("displaywait")),
+        display_wait: args.quirks.contains(&String::from("displaywait"))
+            || args.quirks.contains(&String::from("chip8")),
         clipping: args.quirks.contains(&String::from("clipping"))
             || args.quirks.contains(&String::from("chip8")),
         shifting: args.quirks.contains(&String::from("shifting")),

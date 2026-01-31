@@ -18,6 +18,7 @@ static CYCLES_PER_FRAME: u32 = 10;
 struct Chip8State {
     // Flags
     eti_600_flag: bool,
+    vblank_waiting: bool,
 
     // Memory
     mem: [u8; MEMORY_LIMIT as usize],
@@ -50,6 +51,7 @@ pub struct Chip8Quirks {
 pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: &Chip8Quirks, debug_mode: bool) {
     let mut state = Chip8State {
         eti_600_flag: false,
+        vblank_waiting: false,
         mem: [0; 4096],
         stack: [0; 16],
         r_v: [0; 16],
@@ -122,6 +124,7 @@ fn start(state: &mut Chip8State, quirks: &Chip8Quirks, debug_mode: bool) {
 
         input::handle_input(state, &mut rl);
 
+        state.vblank_waiting = false;
         for _ in 0..CYCLES_PER_FRAME {
             let instruction_bytes =
                 memory::read_n_bytes(&state.mem, state.mem.len(), state.r_pc as usize, 2);
@@ -134,6 +137,10 @@ fn start(state: &mut Chip8State, quirks: &Chip8Quirks, debug_mode: bool) {
             }
 
             cpu::execute_instruction(state, instruction, &quirks);
+
+            if state.vblank_waiting {
+                break;
+            }
         }
 
         // move to timers.rs

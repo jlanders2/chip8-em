@@ -128,6 +128,10 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: &Ch
             } else {
                 gpu::draw(state, x, y, &bytes, n);
             }
+
+            if quirks.display_wait {
+                state.vblank_waiting = true;
+            }
         }
         (0xE, _, _, 0xE) => {
             let key_index = state.r_v[x as usize];
