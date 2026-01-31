@@ -8,9 +8,6 @@ mod chip8;
 #[derive(Parser, Debug)]
 #[command(version, about = "Chip 8 Emulator")]
 struct Args {
-    /// Turn on debug mode
-    #[arg(short, long, action = clap::ArgAction::SetTrue)]
-    debug: bool,
     /// Set path for chip8 binary file to run
     #[arg(short, long)]
     file: Option<String>,
@@ -34,10 +31,6 @@ fn main() {
     };
 
     if let Some(filepath) = args.file {
-        if args.debug {
-            chip8::run(filepath, quirks, true);
-        } else {
-            chip8::run(filepath, quirks, false);
-        }
+        chip8::run(filepath, quirks);
     }
 }

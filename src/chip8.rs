@@ -1,5 +1,4 @@
 mod cpu;
-mod debug;
 mod gpu;
 mod input;
 mod memory;
@@ -13,6 +12,7 @@ static VARIABLE_REGISTER_COUNT: u8 = 16;
 static TIMER_TICK_RATE: f32 = 60.0;
 static DESIRED_FPS: f32 = 60.0;
 static CYCLES_PER_FRAME: f32 = 10.0;
+static INSTRUCTION_BYTE_SIZE: usize = 2;
 
 #[derive(Debug, Clone)]
 struct Chip8State {
@@ -50,7 +50,7 @@ pub struct Chip8Quirks {
     pub jumping: bool,
 }
 
-pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: Chip8Quirks, debug_mode: bool) {
+pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: Chip8Quirks) {
     let mut state = Chip8State {
         eti_600_flag: false,
         vblank_waiting: false,
@@ -76,10 +76,10 @@ pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: Chip8Quirks, deb
     let _ = memory::load_file_to_memory(&mut state, chip8_executable_filepath.as_ref());
 
     // Run Program
-    start(state, quirks, debug_mode);
+    start(state, quirks);
 }
 
-fn start(mut state: Chip8State, quirks: Chip8Quirks, debug_mode: bool) {
+fn start(mut state: Chip8State, quirks: Chip8Quirks) {
     // TODO rip out as much RL stuff from here and put into renderer
     // Init Rendering Pipeline
     let (mut rl, thread) = raylib::init()
@@ -91,9 +91,7 @@ fn start(mut state: Chip8State, quirks: Chip8Quirks, debug_mode: bool) {
         .build();
     #[allow(clippy::cast_sign_loss)]
     rl.set_target_fps(DESIRED_FPS as u32); // Should see if i can get the users hz
-    if !debug_mode {
-        rl.set_trace_log(raylib::ffi::TraceLogLevel::LOG_NONE);
-    }
+    rl.set_trace_log(raylib::ffi::TraceLogLevel::LOG_NONE);
 
     // initialize timer
     let mut timer_accumulator: f32 = 0.0f32;
@@ -132,17 +130,17 @@ fn start(mut state: Chip8State, quirks: Chip8Quirks, debug_mode: bool) {
 
         state.vblank_waiting = false;
         for _ in 0..CYCLES_PER_FRAME as i32 {
-            let instruction_bytes =
-                memory::read_n_bytes(&state.mem, state.mem.len(), state.r_pc as usize, 2);
+            let instruction_bytes = memory::read_n_bytes(
+                &state.mem,
+                state.mem.len(),
+                state.r_pc as usize,
+                INSTRUCTION_BYTE_SIZE,
+            );
             let instruction: u16 =
                 (u16::from(instruction_bytes[0]) << 8) | u16::from(instruction_bytes[1]);
             state.r_pc += 2;
 
-            if debug_mode {
-                debug::print_debug(&state, instruction);
-            }
-
-            cpu::execute_instruction(&mut state, instruction, &quirks);
+            cpu::execute_instruction(&mut state, instruction, quirks);
 
             if state.vblank_waiting {
                 break;

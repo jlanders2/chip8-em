@@ -10,34 +10,30 @@ pub fn read_n_bytes(
     let mut addr = start_addr;
     let mut bytes = Vec::new();
     while addr != start_addr + n_bytes {
-        if addr >= buffer_len {
-            panic!(
-                "Couldn't read from Address {} exceeds buffer length {}",
-                addr, buffer_len
-            ) // nice error handling
-        }
+        assert!(
+            addr >= buffer_len,
+            "Couldn't read from Address {addr} exceeds buffer length {buffer_len}"
+        );
         bytes.push(buffer[addr]);
 
         addr += 1;
     }
 
-    return bytes as Vec<u8>;
+    bytes as Vec<u8>
 }
 
 pub fn load_bytes(state: &mut Chip8State, data: &[u8], data_len: usize, start_addr: usize) {
-    for i in 0..data_len {
-        state.mem[start_addr + i] = data[i];
-    }
+    state.mem[start_addr..(data_len + start_addr)].copy_from_slice(&data[..data_len]);
 }
 
 pub fn load_file_to_memory<P: AsRef<Path>>(state: &mut Chip8State, filepath: P) -> io::Result<()> {
     let fp = filepath.as_ref();
 
     // read file to Vec(u8)
-    let program = std::fs::read(fp)?;
+    let bytes = std::fs::read(fp)?;
 
-    for i in 0..program.len() {
-        state.mem[state.r_pc as usize + i] = program[i];
+    for (i, byte) in bytes.into_iter().enumerate() {
+        state.mem[state.r_pc as usize + i] = byte;
     }
 
     // Should return Ok or Err

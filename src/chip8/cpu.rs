@@ -1,21 +1,22 @@
+#![allow(clippy::many_single_char_names)]
 use crate::chip8::{Chip8Quirks, gpu};
 
 use super::Chip8State;
 use super::memory::read_n_bytes;
 
 // Need to come back and add good comments for each of the match patterns
-pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: &Chip8Quirks) {
+pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: Chip8Quirks) {
     let c = ((instruction & 0xF000) >> 12) as u8;
     let x = ((instruction & 0x0F00) >> 8) as u8;
     let y = ((instruction & 0x00F0) >> 4) as u8;
     let d = (instruction & 0x000F) as u8;
     let n = d;
     let kk = (instruction & 0x00FF) as u8;
-    let nnn = (instruction & 0x0FFF) as u16;
+    let nnn = instruction & 0x0FFF;
 
     match (c, x, y, d) {
         (0x0, _, 0xE, 0x0) => {
-            for row in state.display.iter_mut() {
+            for row in &mut state.display {
                 for col in row {
                     *col = false;
                 }
@@ -68,9 +69,9 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: &Ch
             }
         }
         (0x8, _, _, 0x4) => {
-            let val: u16 = state.r_v[x as usize] as u16 + state.r_v[y as usize] as u16;
-            if val > u8::MAX as u16 {
-                state.r_v[x as usize] = (val & 0xFFFF) as u8;
+            let val: u16 = u16::from(state.r_v[x as usize]) + u16::from(state.r_v[y as usize]);
+            if val > u16::from(u8::MAX) {
+                state.r_v[x as usize] = val as u8;
                 state.r_v[0xF] = 1;
             } else {
                 state.r_v[x as usize] = val as u8;
@@ -80,43 +81,44 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: &Ch
         (0x8, _, _, 0x5) => {
             let flag = state.r_v[x as usize] >= state.r_v[y as usize];
             state.r_v[x as usize] = state.r_v[x as usize].wrapping_sub(state.r_v[y as usize]);
-            state.r_v[0xF] = if flag { 1 } else { 0 };
+            state.r_v[0xF] = u8::from(flag);
         }
         (0x8, _, _, 0x6) => {
             if !quirks.shifting {
                 state.r_v[x as usize] = state.r_v[y as usize];
             }
-            let flag = (state.r_v[x as usize] & 0b00000001) == 1;
-            state.r_v[x as usize] = state.r_v[x as usize] / 2;
-            state.r_v[0xF] = if flag { 1 } else { 0 };
+            let flag = (state.r_v[x as usize] & 0b0000_0001) == 1;
+            state.r_v[x as usize] /= 2;
+            state.r_v[0xF] = u8::from(flag);
         }
         (0x8, _, _, 0x7) => {
             let flag = state.r_v[x as usize] <= state.r_v[y as usize];
             state.r_v[x as usize] = state.r_v[y as usize].wrapping_sub(state.r_v[x as usize]);
-            state.r_v[0xF] = if flag { 1 } else { 0 };
+            state.r_v[0xF] = u8::from(flag);
         }
         (0x8, _, _, 0xE) => {
             if !quirks.shifting {
                 state.r_v[x as usize] = state.r_v[y as usize];
             }
-            let flag = ((state.r_v[x as usize] & 0b10000000) >> 7) == 1;
+            let flag = ((state.r_v[x as usize] & 0b1000_0000) >> 7) == 1;
             state.r_v[x as usize] = state.r_v[x as usize].wrapping_mul(2);
-            state.r_v[0xF] = if flag { 1 } else { 0 };
+            state.r_v[0xF] = u8::from(flag);
         }
         (0x9, _, _, _) => {
             if state.r_v[x as usize] != state.r_v[y as usize] {
-                state.r_pc += 2
+                state.r_pc += 2;
             }
         }
         (0xA, _, _, _) => state.r_i = nnn,
         (0xB, _, _, _) => {
             if quirks.jumping {
-                state.r_pc = nnn + state.r_v[x as usize] as u16;
+                state.r_pc = nnn + u16::from(state.r_v[x as usize]);
             } else {
-                state.r_pc = nnn + state.r_v[0] as u16;
+                state.r_pc = nnn + u16::from(state.r_v[0]);
             }
         }
         (0xC, _, _, _) => {
+            #[allow(clippy::cast_sign_loss)]
             let rng = rand::random_range(0..256) as u8;
             let result = rng & kk;
             state.r_v[x as usize] = result;
@@ -161,15 +163,15 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: &Ch
         }
         (0xF, _, 0x1, 0x5) => state.r_dt = state.r_v[x as usize],
         (0xF, _, 0x1, 0x8) => state.r_st = state.r_v[x as usize],
-        (0xF, _, 0x1, 0xE) => state.r_i = state.r_i + state.r_v[x as usize] as u16,
-        (0xF, _, 0x2, 0x9) => state.r_i = gpu::get_builtin_sprite_addr(x) as u16,
+        (0xF, _, 0x1, 0xE) => state.r_i += u16::from(state.r_v[x as usize]),
+        (0xF, _, 0x2, 0x9) => state.r_i = u16::from(gpu::get_builtin_sprite_addr(x)),
         (0xF, _, 0x3, 0x3) => {
             let mut decimal = state.r_v[x as usize];
             let mut i = 3;
             loop {
-                i = i - 1;
+                i -= 1;
                 state.mem[(state.r_i + i) as usize] = decimal % 10;
-                decimal = decimal / 10;
+                decimal /= 10;
 
                 if i == 0 {
                     break;
@@ -180,15 +182,15 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: &Ch
             let mut i = 0;
             while i <= x {
                 match y {
-                    0x5 => state.mem[(state.r_i + i as u16) as usize] = state.r_v[i as usize],
-                    0x6 => state.r_v[i as usize] = state.mem[(state.r_i + i as u16) as usize],
-                    _ => panic!("Unmatched OPCODE 0xFx{}5", y),
+                    0x5 => state.mem[(state.r_i + u16::from(i)) as usize] = state.r_v[i as usize],
+                    0x6 => state.r_v[i as usize] = state.mem[(state.r_i + u16::from(i)) as usize],
+                    _ => panic!("Unmatched OPCODE 0xFx{y}5"),
                 }
 
-                i = i + 1;
+                i += 1;
             }
             if quirks.memory {
-                state.r_i += i as u16;
+                state.r_i += u16::from(i);
             }
         }
         _ => {}
