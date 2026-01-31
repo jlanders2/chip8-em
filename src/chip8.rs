@@ -38,7 +38,16 @@ struct Chip8State {
     input: [bool; 16],
 }
 
-pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, debug_mode: bool) {
+pub struct Chip8Quirks {
+    pub vf_reset: bool,
+    pub memory: bool,
+    pub display_wait: bool, // TODO: Looks to be working, but not in quirks test file
+    pub clipping: bool,     // TODO: Looks to be working, but not in quirks test file
+    pub shifting: bool,
+    pub jumping: bool,
+}
+
+pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: &Chip8Quirks, debug_mode: bool) {
     let mut state = Chip8State {
         eti_600_flag: false,
         mem: [0; 4096],
@@ -63,10 +72,10 @@ pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, debug_mode: bool) {
     let _ = memory::load_file_to_memory(&mut state, chip8_executable_filepath.as_ref());
 
     // Run Program
-    start(&mut state, debug_mode);
+    start(&mut state, &quirks, debug_mode);
 }
 
-fn start(state: &mut Chip8State, debug_mode: bool) {
+fn start(state: &mut Chip8State, quirks: &Chip8Quirks, debug_mode: bool) {
     // TODO rip out as much RL stuff from here and put into renderer
     // Init Rendering Pipeline
     let (mut rl, thread) = raylib::init()
@@ -124,7 +133,7 @@ fn start(state: &mut Chip8State, debug_mode: bool) {
                 debug::print_debug(state, instruction);
             }
 
-            cpu::execute_instruction(state, instruction);
+            cpu::execute_instruction(state, instruction, &quirks);
         }
 
         // move to timers.rs

@@ -11,17 +11,29 @@ struct Args {
     /// Set path for chip8 binary file to run
     #[arg(short, long)]
     file: Option<String>,
+    #[arg(short = 'q', long = "quirks", value_delimiter = ',')]
+    quirks: Vec<String>,
 }
 
 fn main() {
     let args = Args::parse();
-    // TODO: should define my raylib/sound/etc handles here eventually and pass them down
+    let quirks = chip8::Chip8Quirks {
+        vf_reset: args.quirks.contains(&String::from("vfreset"))
+            || args.quirks.contains(&String::from("chip8")),
+        memory: args.quirks.contains(&String::from("memory"))
+            || args.quirks.contains(&String::from("chip8")),
+        display_wait: args.quirks.contains(&String::from("displaywait")),
+        clipping: args.quirks.contains(&String::from("clipping"))
+            || args.quirks.contains(&String::from("chip8")),
+        shifting: args.quirks.contains(&String::from("shifting")),
+        jumping: args.quirks.contains(&String::from("jumping")),
+    };
 
     if let Some(filepath) = args.file {
         if args.debug {
-            chip8::run(filepath, true);
+            chip8::run(filepath, &quirks, true);
         } else {
-            chip8::run(filepath, false);
+            chip8::run(filepath, &quirks, false);
         }
     }
 }

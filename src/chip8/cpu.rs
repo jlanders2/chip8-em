@@ -1,10 +1,10 @@
-use crate::chip8::gpu;
+use crate::chip8::{Chip8Quirks, gpu};
 
 use super::Chip8State;
 use super::memory::read_n_bytes;
 
 // Need to come back and add good comments for each of the match patterns
-pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
+pub fn execute_instruction(state: &mut Chip8State, instruction: u16, quirks: &Chip8Quirks) {
     let c = ((instruction & 0xF000) >> 12) as u8;
     let x = ((instruction & 0x0F00) >> 8) as u8;
     let y = ((instruction & 0x00F0) >> 4) as u8;
@@ -49,9 +49,24 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
         (0x6, _, _, _) => state.r_v[x as usize] = kk,
         (0x7, _, _, _) => state.r_v[x as usize] = state.r_v[x as usize].wrapping_add(kk),
         (0x8, _, _, 0x0) => state.r_v[x as usize] = state.r_v[y as usize],
-        (0x8, _, _, 0x1) => state.r_v[x as usize] |= state.r_v[y as usize],
-        (0x8, _, _, 0x2) => state.r_v[x as usize] &= state.r_v[y as usize],
-        (0x8, _, _, 0x3) => state.r_v[x as usize] ^= state.r_v[y as usize],
+        (0x8, _, _, 0x1) => {
+            state.r_v[x as usize] |= state.r_v[y as usize];
+            if quirks.vf_reset {
+                state.r_v[0xF] = 0;
+            }
+        }
+        (0x8, _, _, 0x2) => {
+            state.r_v[x as usize] &= state.r_v[y as usize];
+            if quirks.vf_reset {
+                state.r_v[0xF] = 0;
+            }
+        }
+        (0x8, _, _, 0x3) => {
+            state.r_v[x as usize] ^= state.r_v[y as usize];
+            if quirks.vf_reset {
+                state.r_v[0xF] = 0;
+            }
+        }
         (0x8, _, _, 0x4) => {
             let val: u16 = state.r_v[x as usize] as u16 + state.r_v[y as usize] as u16;
             if val > u8::MAX as u16 {
@@ -68,6 +83,9 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
             state.r_v[0xF] = if flag { 1 } else { 0 };
         }
         (0x8, _, _, 0x6) => {
+            if !quirks.shifting {
+                state.r_v[x as usize] = state.r_v[y as usize];
+            }
             let flag = (state.r_v[x as usize] & 0b00000001) == 1;
             state.r_v[x as usize] = state.r_v[x as usize] / 2;
             state.r_v[0xF] = if flag { 1 } else { 0 };
@@ -78,6 +96,9 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
             state.r_v[0xF] = if flag { 1 } else { 0 };
         }
         (0x8, _, _, 0xE) => {
+            if !quirks.shifting {
+                state.r_v[x as usize] = state.r_v[y as usize];
+            }
             let flag = ((state.r_v[x as usize] & 0b10000000) >> 7) == 1;
             state.r_v[x as usize] = state.r_v[x as usize].wrapping_mul(2);
             state.r_v[0xF] = if flag { 1 } else { 0 };
@@ -88,16 +109,25 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
             }
         }
         (0xA, _, _, _) => state.r_i = nnn,
-        (0xB, _, _, _) => state.r_pc = nnn + state.r_v[0] as u16,
+        (0xB, _, _, _) => {
+            if quirks.jumping {
+                state.r_pc = nnn + state.r_v[x as usize] as u16;
+            } else {
+                state.r_pc = nnn + state.r_v[0] as u16;
+            }
+        }
         (0xC, _, _, _) => {
             let rng = rand::random_range(0..256) as u8;
             let result = rng & kk;
             state.r_v[x as usize] = result;
         }
         (0xD, _, _, _) => {
-            state.r_v[0xF] = 0;
             let bytes = read_n_bytes(&state.mem, state.mem.len(), state.r_i as usize, n as usize);
-            gpu::wrapping_draw(state, x, y, &bytes, n);
+            if quirks.clipping {
+                gpu::clipping_draw(state, x, y, &bytes, n);
+            } else {
+                gpu::draw(state, x, y, &bytes, n);
+            }
         }
         (0xE, _, _, 0xE) => {
             let key_index = state.r_v[x as usize];
@@ -152,6 +182,9 @@ pub fn execute_instruction(state: &mut Chip8State, instruction: u16) {
                 }
 
                 i = i + 1;
+            }
+            if quirks.memory {
+                state.r_i += i as u16;
             }
         }
         _ => {}

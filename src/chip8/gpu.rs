@@ -9,68 +9,72 @@ pub static SPRITE_WIDTH: u8 = 8;
 // I probably don't need state here
 // refactor to just receive a mutatable buffer
 pub fn draw(state: &mut Chip8State, vx: u8, vy: u8, bytes_to_draw: &[u8], bytes_to_draw_len: u8) {
+    state.r_v[0xF] = 0;
+    let start_x = state.r_v[vx as usize] % CHIP8_DISPLAY_WIDTH as u8;
+    let start_y = state.r_v[vy as usize] % CHIP8_DISPLAY_HEIGHT as u8;
+
     let mut bytes_idx = 0;
-    let start_x = state.r_v[vx as usize];
-    let start_y = state.r_v[vy as usize];
-    for y in start_y..start_y + bytes_to_draw_len {
-        println!("{}", bytes_idx);
-        if (y as i32) < CHIP8_DISPLAY_HEIGHT {
-            // 8 is the hardcoded sprite width, has to atleast have 1 8 bit value to display
-            let mut bit_idx = 0;
-            for x in start_x..start_x + SPRITE_WIDTH {
-                println!("(X,Y): ({},{})", x, y);
-                if (x as i32) < CHIP8_DISPLAY_WIDTH {
-                    let sprite_pixel = ((bytes_to_draw[bytes_idx] >> (7 - bit_idx)) & 1) == 1;
-                    let current_pixel = state.display[y as usize][x as usize];
-                    let new_pixel = current_pixel ^ sprite_pixel;
+    while bytes_idx < bytes_to_draw_len {
+        // TODO: this should be a u8 for safety
+        let y: u8 = start_y.wrapping_add(bytes_idx) % CHIP8_DISPLAY_HEIGHT as u8;
 
-                    state.display[y as usize][x as usize] = new_pixel;
+        let mut bit_idx = 0;
+        while bit_idx < SPRITE_WIDTH {
+            let x: u8 = start_x.wrapping_add(bit_idx) % CHIP8_DISPLAY_WIDTH as u8;
 
-                    if new_pixel != current_pixel {
-                        state.r_v[0xF] = 1;
-                    }
+            let sprite_pixel = ((bytes_to_draw[bytes_idx as usize] >> (7 - bit_idx)) & 1) == 1;
+            if sprite_pixel {
+                let current_pixel = state.display[y as usize][x as usize];
 
-                    bit_idx += 1;
+                if current_pixel {
+                    state.r_v[0xF] = 1;
                 }
+
+                state.display[y as usize][x as usize] ^= true;
             }
+
+            bit_idx += 1;
         }
+
         bytes_idx += 1;
     }
 }
 
-pub fn wrapping_draw(
+pub fn clipping_draw(
     state: &mut Chip8State,
     vx: u8,
     vy: u8,
     bytes_to_draw: &[u8],
     bytes_to_draw_len: u8,
 ) {
-    let mut bytes_idx = 0;
-    let start_x = state.r_v[vx as usize];
-    let start_y = state.r_v[vy as usize];
+    state.r_v[0xF] = 0;
+    let start_x = state.r_v[vx as usize] % CHIP8_DISPLAY_WIDTH as u8;
+    let start_y = state.r_v[vy as usize] % CHIP8_DISPLAY_HEIGHT as u8;
 
+    let mut bytes_idx = 0;
     while bytes_idx < bytes_to_draw_len {
-        let mut y = start_y.wrapping_add(bytes_idx);
-        if y as i32 >= CHIP8_DISPLAY_HEIGHT {
-            y = (y - CHIP8_DISPLAY_HEIGHT as u8) % CHIP8_DISPLAY_HEIGHT as u8;
+        let y: u16 = (start_y + bytes_idx) as u16;
+        // TODO: general reminder to cleanup type casts to be consistent
+        if y >= CHIP8_DISPLAY_HEIGHT as u16 {
+            break;
         }
 
         let mut bit_idx = 0;
-
         while bit_idx < SPRITE_WIDTH {
-            let mut x = start_x.wrapping_add(bit_idx);
-            if x as i32 >= CHIP8_DISPLAY_WIDTH {
-                x = (x - CHIP8_DISPLAY_WIDTH as u8) % CHIP8_DISPLAY_WIDTH as u8;
+            let x = (start_x + bit_idx) as u16;
+            if x >= CHIP8_DISPLAY_WIDTH as u16 {
+                break;
             }
 
             let sprite_pixel = ((bytes_to_draw[bytes_idx as usize] >> (7 - bit_idx)) & 1) == 1;
-            let current_pixel = state.display[y as usize][x as usize];
-            let new_pixel = current_pixel ^ sprite_pixel;
+            if sprite_pixel {
+                let current_pixel = state.display[y as usize][x as usize];
 
-            state.display[y as usize][x as usize] = new_pixel;
+                if current_pixel {
+                    state.r_v[0xF] = 1;
+                }
 
-            if new_pixel != current_pixel {
-                state.r_v[0xF] = 1;
+                state.display[y as usize][x as usize] ^= true;
             }
 
             bit_idx += 1;
