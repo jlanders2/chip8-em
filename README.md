@@ -113,19 +113,19 @@ This is an example of how to list things you need to use the software and how to
 
 Choose the method that best fits your needs. If you just want to use the emulator, I recommend using the **Pre-built Binaries**.
 
-#### Prerequisity - Obtaining a Chip8 Rom
+#### Prerequisite - Obtaining a Chip8 Rom
 *Note - as of now the project only supports chip8 programs. Chip8 extensions such as SUPER-Chip or XO-Chip will not work with v1*
 This emulator requires you either:
-A) Create your own ROM using a tool like [Octo](https://johnearnest.github.io/Octo/) 
-B) Download a ROM made by the community [here](https://johnearnest.github.io/chip8Archive/?sort=platform)
-    * Navigate to link provided above
-    * Click on a chip8 platform game that seems interesting
-    * Click "Download Rom"
+* Create your own ROM using a tool like [Octo](https://johnearnest.github.io/Octo/) 
+* Download a ROM made by the community [here](https://johnearnest.github.io/chip8Archive/?sort=platform)
+  * Navigate to link provided above
+  * Click on a chip8 platform game that seems interesting
+  * Click "Download Rom"
 
 #### 🚀 Option 1: Pre-built Binaries (Fastest)
 **WIP**
 
-#### 🛠️ Option 2: Build Locally (From Source)
+#### 🛠️ Option 2: Built Locally (From Source)
 **WIP**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
