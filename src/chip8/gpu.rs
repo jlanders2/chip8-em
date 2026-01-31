@@ -2,8 +2,8 @@ use crate::chip8::memory;
 
 use super::Chip8State;
 
-pub static CHIP8_DISPLAY_WIDTH: i32 = 64;
-pub static CHIP8_DISPLAY_HEIGHT: i32 = 32;
+pub static CHIP8_DISPLAY_WIDTH: u8 = 64;
+pub static CHIP8_DISPLAY_HEIGHT: u8 = 32;
 pub static SPRITE_WIDTH: u8 = 8;
 
 // I probably don't need state here

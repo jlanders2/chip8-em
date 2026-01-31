@@ -7,14 +7,14 @@ mod renderer;
 
 use rodio::source::{SineWave, Source};
 
-static MEMORY_LIMIT: i32 = 4096;
-static STACK_LIMIT: i32 = 16;
-static VARIABLE_REGISTER_COUNT: i32 = 16;
-static TIMER_TICK_RATE: u32 = 60;
-static DESIRED_FPS: u32 = 60;
-static CYCLES_PER_FRAME: u32 = 10;
+static MEMORY_LIMIT: u16 = 4096;
+static STACK_LIMIT: u8 = 16;
+static VARIABLE_REGISTER_COUNT: u8 = 16;
+static TIMER_TICK_RATE: f32 = 60.0;
+static DESIRED_FPS: f32 = 60.0;
+static CYCLES_PER_FRAME: f32 = 10.0;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 struct Chip8State {
     // Flags
     eti_600_flag: bool,
@@ -39,6 +39,8 @@ struct Chip8State {
     input: [bool; 16],
 }
 
+#[derive(Debug, Clone, Copy)]
+#[allow(clippy::struct_excessive_bools)]
 pub struct Chip8Quirks {
     pub vf_reset: bool,
     pub memory: bool,
@@ -48,7 +50,7 @@ pub struct Chip8Quirks {
     pub jumping: bool,
 }
 
-pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: &Chip8Quirks, debug_mode: bool) {
+pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: Chip8Quirks, debug_mode: bool) {
     let mut state = Chip8State {
         eti_600_flag: false,
         vblank_waiting: false,
@@ -64,42 +66,46 @@ pub fn run<S: AsRef<str>>(chip8_executable_filepath: S, quirks: &Chip8Quirks, de
         input: [false; 16],
     };
 
-    if !state.eti_600_flag {
-        state.r_pc = 0x200;
-    } else {
+    if state.eti_600_flag {
         state.r_pc = 0x600;
+    } else {
+        state.r_pc = 0x200;
     }
 
     // Load Program
     let _ = memory::load_file_to_memory(&mut state, chip8_executable_filepath.as_ref());
 
     // Run Program
-    start(&mut state, &quirks, debug_mode);
+    start(state, quirks, debug_mode);
 }
 
-fn start(state: &mut Chip8State, quirks: &Chip8Quirks, debug_mode: bool) {
+fn start(mut state: Chip8State, quirks: Chip8Quirks, debug_mode: bool) {
     // TODO rip out as much RL stuff from here and put into renderer
     // Init Rendering Pipeline
     let (mut rl, thread) = raylib::init()
-        .size(renderer::DISPLAY_WIDTH, renderer::DISPLAY_HEIGHT)
+        .size(
+            i32::from(renderer::DISPLAY_WIDTH),
+            i32::from(renderer::DISPLAY_HEIGHT),
+        )
         .title("Chip8 Emu")
         .build();
-    rl.set_target_fps(DESIRED_FPS); // Should see if i can get the users hz
+    #[allow(clippy::cast_sign_loss)]
+    rl.set_target_fps(DESIRED_FPS as u32); // Should see if i can get the users hz
     if !debug_mode {
         rl.set_trace_log(raylib::ffi::TraceLogLevel::LOG_NONE);
     }
 
     // initialize timer
     let mut timer_accumulator: f32 = 0.0f32;
-    let timer_increment: f32 = TIMER_TICK_RATE as f32 / DESIRED_FPS as f32;
+    let timer_increment: f32 = TIMER_TICK_RATE / DESIRED_FPS;
 
     // initialize builtin sprites
-    gpu::load_builtin_sprites(state);
+    gpu::load_builtin_sprites(&mut state);
 
     // initialize sound system look into struct and impl for functions
     let stream_handle =
         rodio::OutputStreamBuilder::open_default_stream().expect("open default audio stream");
-    let sink = rodio::Sink::connect_new(&stream_handle.mixer());
+    let sink = rodio::Sink::connect_new(stream_handle.mixer());
 
     let source = SineWave::new(440.0)
         .amplify(0.2) // Volume (0.0 to 1.0)
@@ -122,21 +128,21 @@ fn start(state: &mut Chip8State, quirks: &Chip8Quirks, debug_mode: bool) {
             sink.set_volume(0.0f32);
         }
 
-        input::handle_input(state, &mut rl);
+        input::handle_input(&mut state, &mut rl);
 
         state.vblank_waiting = false;
-        for _ in 0..CYCLES_PER_FRAME {
+        for _ in 0..CYCLES_PER_FRAME as i32 {
             let instruction_bytes =
                 memory::read_n_bytes(&state.mem, state.mem.len(), state.r_pc as usize, 2);
             let instruction: u16 =
-                ((instruction_bytes[0] as u16) << 8) | instruction_bytes[1] as u16;
+                (u16::from(instruction_bytes[0]) << 8) | u16::from(instruction_bytes[1]);
             state.r_pc += 2;
 
             if debug_mode {
-                debug::print_debug(state, instruction);
+                debug::print_debug(&state, instruction);
             }
 
-            cpu::execute_instruction(state, instruction, &quirks);
+            cpu::execute_instruction(&mut state, instruction, &quirks);
 
             if state.vblank_waiting {
                 break;
@@ -150,7 +156,7 @@ fn start(state: &mut Chip8State, quirks: &Chip8Quirks, debug_mode: bool) {
             while timer_accumulator >= 1.0f32 {
                 if state.r_dt > 0 {
                     state.r_dt -= 1;
-                };
+                }
                 if state.r_st > 0 {
                     state.r_st -= 1;
                 }

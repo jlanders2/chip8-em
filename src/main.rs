@@ -1,4 +1,5 @@
 #![warn(clippy::pedantic)]
+#![allow(clippy::cast_possible_truncation)]
 
 use clap::Parser;
 
@@ -34,9 +35,9 @@ fn main() {
 
     if let Some(filepath) = args.file {
         if args.debug {
-            chip8::run(filepath, &quirks, true);
+            chip8::run(filepath, quirks, true);
         } else {
-            chip8::run(filepath, &quirks, false);
+            chip8::run(filepath, quirks, false);
         }
     }
 }
