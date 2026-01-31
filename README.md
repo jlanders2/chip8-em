@@ -117,9 +117,9 @@ Choose the method that best fits your needs. If you just want to use the emulato
 *Note - as of now the project only supports chip8 programs. Chip8 extensions such as SUPER-Chip or XO-Chip will not work with v1*
 This emulator requires you either:
 * Create your own ROM using a tool like [Octo](https://johnearnest.github.io/Octo/) 
-* Download a ROM made by the community [here](https://johnearnest.github.io/chip8Archive/?sort=platform)
-  * Navigate to link provided above
-  * Click on a chip8 platform game that seems interesting
+* Download a ROM made by the community
+  * Navigate to [johnearnest.github.io/chip8Archive/](https://johnearnest.github.io/chip8Archive/?sort=platform)
+  * Select a chip8 ROM that seems interesting
   * Click "Download Rom"
 
 #### 🚀 Option 1: Pre-built Binaries (Fastest)
@@ -183,7 +183,7 @@ Project Link: [https://git.colelanders.dev/jlanders/chip8-em](https://git.colela
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
+* [John Earnest Chip8 Archive](https://github.com/JohnEarnest/chip8Archive) - For amazing tools and support of the Chip8 ecosystem
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
