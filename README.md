@@ -74,6 +74,7 @@
 
 * [![Rust][Rust]][Rust-url]
 * [![Raylib][Raylib]][Raylib-url]
+* [![Raylib Rust Bindings][raylib-rs]][Raylib-Rust-url]
 * [![Clap][Clap]][Clap-url]
 * [![Rodio][Rodio]][Rodio-url]
 
@@ -204,9 +205,10 @@ Project Link: [https://git.colelanders.dev/jlanders/chip8-em](https://git.colela
 
 [Raylib]: https://img.shields.io/badge/raylib-white?style=for-the-badge&logo=target&logoColor=black
 [Raylib-url]: https://www.raylib.com/
+[Raylib-Rust-url]: https://github.com/raylib-rs/raylib-rs
 
 [Clap]: https://img.shields.io/badge/clap-blue?style=for-the-badge&logo=command-line&logoColor=white
-[Clap-url]: https://clap.rs/
+[Clap-url]: https://github.com/clap-rs/clap
 
 [Rodio]: https://img.shields.io/badge/rodio-orange?style=for-the-badge&logo=audio-bus&logoColor=white
 [Rodio-url]: https://github.com/RustAudio/rodio
