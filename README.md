@@ -74,7 +74,6 @@
 
 * [![Rust][Rust]][Rust-url]
 * [![Raylib][Raylib]][Raylib-url]
-* [![Raylib Rust Bindings][raylib-rs]][Raylib-Rust-url]
 * [![Clap][Clap]][Clap-url]
 * [![Rodio][Rodio]][Rodio-url]
 
@@ -184,6 +183,7 @@ Project Link: [https://git.colelanders.dev/jlanders/chip8-em](https://git.colela
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
+* [raylib-rs](https://github.com/raylib-rs/raylib-rs) - For raylib rust bindings
 * [John Earnest Chip8 Archive](https://github.com/JohnEarnest/chip8Archive) - For amazing tools and support of the Chip8 ecosystem
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -205,7 +205,6 @@ Project Link: [https://git.colelanders.dev/jlanders/chip8-em](https://git.colela
 
 [Raylib]: https://img.shields.io/badge/raylib-white?style=for-the-badge&logo=target&logoColor=black
 [Raylib-url]: https://www.raylib.com/
-[Raylib-Rust-url]: https://github.com/raylib-rs/raylib-rs
 
 [Clap]: https://img.shields.io/badge/clap-blue?style=for-the-badge&logo=command-line&logoColor=white
 [Clap-url]: https://github.com/clap-rs/clap
