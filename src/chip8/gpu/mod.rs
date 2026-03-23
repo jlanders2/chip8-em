@@ -1,10 +1,12 @@
-use crate::chip8::memory;
+mod constants;
 
 use super::Chip8State;
+use crate::chip8::memory;
+use constants::{BUILTIN_SPIRTES, BUILTIN_SPRITES_ADDR};
 
-pub static CHIP8_DISPLAY_WIDTH: u8 = 64;
-pub static CHIP8_DISPLAY_HEIGHT: u8 = 32;
-pub static SPRITE_WIDTH: u8 = 8;
+pub const CHIP8_DISPLAY_WIDTH: u8 = 64;
+pub const CHIP8_DISPLAY_HEIGHT: u8 = 32;
+pub const SPRITE_WIDTH: u8 = 8;
 
 // I probably don't need state here
 // refactor to just receive a mutatable buffer
@@ -94,90 +96,5 @@ pub fn load_builtin_sprites(state: &mut Chip8State) {
 }
 
 pub fn get_builtin_sprite_addr(sprite_index: u8) -> u8 {
-    BUILTIN_SPRITES_ADDR + (sprite_index * BUILTIN_SPRITES_SIZE)
+    constants::BUILTIN_SPRITES_ADDR + (sprite_index * constants::BUILTIN_SPRITES_SIZE)
 }
-
-static BUILTIN_SPRITES_ADDR: u8 = 0;
-static BUILTIN_SPRITES_SIZE: u8 = 5;
-static BUILTIN_SPIRTES: [u8; 80] = [
-    0xF0, // 0
-    0x90, // 0
-    0x90, // 0
-    0x90, // 0
-    0xF0, // 0
-    0x20, // 1
-    0x60, // 1
-    0x20, // 1
-    0x20, // 1
-    0x70, // 1
-    0xF0, // 2
-    0x10, // 2
-    0xF0, // 2
-    0x80, // 2
-    0xF0, // 2
-    0xF0, // 3
-    0x10, // 3
-    0xF0, // 3
-    0x10, // 3
-    0xF0, // 3
-    0x90, // 4
-    0x90, // 4
-    0xF0, // 4
-    0x10, // 4
-    0x10, // 4
-    0xF0, // 5
-    0x80, // 5
-    0xF0, // 5
-    0x10, // 5
-    0xF0, // 5
-    0xF0, // 6
-    0x80, // 6
-    0xF0, // 6
-    0x90, // 6
-    0xF0, // 6
-    0xF0, // 7
-    0x10, // 7
-    0x20, // 7
-    0x40, // 7
-    0x40, // 7
-    0xF0, // 8
-    0x90, // 8
-    0xF0, // 8
-    0x90, // 8
-    0xF0, // 8
-    0xF0, // 9
-    0x90, // 9
-    0xF0, // 9
-    0x10, // 9
-    0xF0, // 9
-    0xF0, // A
-    0x90, // A
-    0xF0, // A
-    0x90, // A
-    0x90, // A
-    0xE0, // B
-    0x90, // B
-    0xE0, // B
-    0x90, // B
-    0xE0, // B
-    0xF0, // C
-    0x80, // C
-    0x80, // C
-    0x80, // C
-    0xF0, // C
-    0xE0, // D
-    0x90, // D
-    0x90, // D
-    0x90, // D
-    0xE0, // D
-    0xF0, // E
-    0x80, // E
-    0xF0, // E
-    0x80, // E
-    0xF0, // E
-    0xF0, // F
-    0x80, // F
-    0xF0, // F
-    0x80, // F
-    0x80, // F
-];

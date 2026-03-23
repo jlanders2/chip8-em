@@ -8,8 +8,6 @@ pub static DISPLAY_HEIGHT: u16 = 480;
 pub fn render(state: &Chip8State, rl_handle: &mut RaylibHandle, rl_thread: &RaylibThread) {
     let mut d = rl_handle.begin_drawing(rl_thread);
 
-    // d.clear_background(Color::BLACK);
-
     let scale_x = DISPLAY_WIDTH / u16::from(CHIP8_DISPLAY_WIDTH);
     let scale_y = DISPLAY_HEIGHT / u16::from(CHIP8_DISPLAY_HEIGHT);
 

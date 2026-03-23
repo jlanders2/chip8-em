@@ -17,6 +17,8 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
+
+    // todo!("Way I'm doing this isn't very rusty");
     let quirks = chip8::Chip8Quirks {
         vf_reset: args.quirks.contains(&String::from("vfreset"))
             || args.quirks.contains(&String::from("chip8")),
